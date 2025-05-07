@@ -1,0 +1,23 @@
+name: Security Scans
+on: [push]
+
+jobs:
+  sonarcloud:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm install
+      - uses: SonarSource/sonarcloud-github-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  dependency-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm install
+      - run: npm audit --json > audit.json
+      - uses: actions/upload-artifact@v2
+        with:
+          name: npm-audit
+          path: audit.json
